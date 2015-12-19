@@ -1,7 +1,9 @@
 import $ from 'jquery';
 window.Vue = require('vue');
 
-window.app = new Vue(require('./app'));
+var vue_app = require('./app')
+
+window.app = new Vue(vue_app.default());
 
 
 

@@ -2,7 +2,8 @@ import $ from 'jquery';
 
 
 
-export default {
+export default function() {
+    return {
     el: 'body',
 
     data: {
@@ -62,4 +63,4 @@ export default {
         }
     }
 }
-
+}

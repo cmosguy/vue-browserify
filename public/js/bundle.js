@@ -18744,71 +18744,73 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
+exports.default = function () {
+    return {
+        el: 'body',
+
+        data: {
+            address: '',
+            hasError: false,
+            classHasError: {
+                'has-error': false
+            },
+            city: "",
+            streetNumber: "",
+            street: "",
+            neighborhood: "",
+            county: "",
+            state: "",
+            countryCode: "",
+            zip: ""
+        },
+
+        watch: {
+            hasError: function hasError() {
+                this.classHasError = {
+                    'has-error': this.hasError
+                };
+            }
+        },
+
+        events: {
+            mapHasError: function mapHasError(message) {
+                this.hasError = true;
+            },
+            mapHasNoError: function mapHasNoError() {
+                this.hasError = false;
+            },
+            addressUpdated: function addressUpdated(location) {
+                this.streetNumber = location[0].long_name;
+                this.street = location[1].long_name;
+                this.neighborhood = location[2].long_name;
+                this.city = location[3].long_name;
+                this.county = location[4].long_name;
+                this.state = location[5].short_name;
+                this.countryCode = location[6].short_name;
+                this.zip = location[7].short_name;
+            }
+        },
+
+        methods: {
+            init: function init() {
+                this.$broadcast('MapsApiLoaded');
+            },
+            warningAlert: function warningAlert(message) {
+                notie.alert(2, 'Warning<br><b>' + message + '</b><br>', 2);
+            },
+            enterKey: function enterKey() {
+                (0, _jquery2.default)("#address").trigger('geocode');
+                this.$broadcast('EnterKeyPressed');
+            }
+        }
+    };
+};
+
 var _jquery = require('jquery');
 
 var _jquery2 = _interopRequireDefault(_jquery);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-exports.default = {
-    el: 'body',
-
-    data: {
-        address: '',
-        hasError: false,
-        classHasError: {
-            'has-error': false
-        },
-        city: "",
-        streetNumber: "",
-        street: "",
-        neighborhood: "",
-        county: "",
-        state: "",
-        countryCode: "",
-        zip: ""
-    },
-
-    watch: {
-        hasError: function hasError() {
-            this.classHasError = {
-                'has-error': this.hasError
-            };
-        }
-    },
-
-    events: {
-        mapHasError: function mapHasError(message) {
-            this.hasError = true;
-        },
-        mapHasNoError: function mapHasNoError() {
-            this.hasError = false;
-        },
-        addressUpdated: function addressUpdated(location) {
-            this.streetNumber = location[0].long_name;
-            this.street = location[1].long_name;
-            this.neighborhood = location[2].long_name;
-            this.city = location[3].long_name;
-            this.county = location[4].long_name;
-            this.state = location[5].short_name;
-            this.countryCode = location[6].short_name;
-            this.zip = location[7].short_name;
-        }
-    },
-
-    methods: {
-        init: function init() {
-            this.$broadcast('MapsApiLoaded');
-        },
-        warningAlert: function warningAlert(message) {
-            notie.alert(2, 'Warning<br><b>' + message + '</b><br>', 2);
-        },
-        enterKey: function enterKey() {
-            (0, _jquery2.default)("#address").trigger('geocode');
-            this.$broadcast('EnterKeyPressed');
-        }
-    }
-};
 
 },{"jquery":1}],5:[function(require,module,exports){
 'use strict';
@@ -18821,7 +18823,9 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 window.Vue = require('vue');
 
-window.app = new Vue(require('./app'));
+var vue_app = require('./app');
+
+window.app = new Vue(vue_app.default());
 
 },{"./app":4,"jquery":1,"vue":3}]},{},[5]);
 
