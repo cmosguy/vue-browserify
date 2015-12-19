@@ -2,8 +2,7 @@ import $ from 'jquery';
 
 
 
-export default
-{
+export default {
     el: 'body',
 
     data: {
@@ -64,4 +63,3 @@ export default
     }
 }
 
-module.exports = app;

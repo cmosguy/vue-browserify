@@ -18810,8 +18810,6 @@ exports.default = {
     }
 };
 
-module.exports = app;
-
 },{"jquery":1}],5:[function(require,module,exports){
 'use strict';
 
