@@ -6,7 +6,7 @@ elixir(function (mix) {
 
 mix.browserify([
             'main.js'
-	            ]);
+	            ]).browserSync();
 
 });
 

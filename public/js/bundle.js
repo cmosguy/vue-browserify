@@ -18823,8 +18823,8 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 window.Vue = require('vue');
 
-window.app = new Vue(require('./app.js'));
+window.app = new Vue(require('./app'));
 
-},{"./app.js":4,"jquery":1,"vue":3}]},{},[5]);
+},{"./app":4,"jquery":1,"vue":3}]},{},[5]);
 
 //# sourceMappingURL=bundle.js.map
