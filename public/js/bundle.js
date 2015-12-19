@@ -18748,6 +18748,8 @@ exports.default = function () {
     return {
         el: 'body',
 
+        components: { map: _map2.default },
+
         data: {
             address: '',
             hasError: false,
@@ -18810,9 +18812,102 @@ var _jquery = require('jquery');
 
 var _jquery2 = _interopRequireDefault(_jquery);
 
+var _map = require('./components/map');
+
+var _map2 = _interopRequireDefault(_map);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-},{"jquery":1}],5:[function(require,module,exports){
+},{"./components/map":5,"jquery":1}],5:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.default = {
+
+    template: '#map-template',
+
+    props: ['address', 'hasError', 'classHasError'],
+
+    events: {
+        MapsApiLoaded: function MapsApiLoaded() {
+            console.log('Google maps API loaded.');
+            this.createMap();
+        },
+        EnterKeyPressed: function EnterKeyPressed() {
+            this.locateAddress();
+        }
+    },
+
+    watch: {
+        address: function address() {
+            this.locateAddress();
+        }
+
+    },
+
+    methods: {
+        createMap: function createMap() {
+
+            $("#address").geocomplete();
+            this.map = new google.maps.Map(this.$els.map, {
+                zoom: 14
+                //center: {lat: 42, lng: -85}
+            });
+
+            this.locateAddress();
+        },
+
+        locateAddress: function locateAddress() {
+            var geocoder = new google.maps.Geocoder();
+            var vm = this;
+
+            geocoder.geocode({ address: this.address }, function (results, status) {
+                if (status === google.maps.GeocoderStatus.OK) {
+                    vm.map.setCenter(results[0].geometry.location);
+
+                    //location = results[0].address_component;
+
+                    if (results[0].address_components.length > 8) {
+                        //vm.city = results[0].address_components[3].long_name;
+                        vm.$dispatch('addressUpdated', results[0].address_components);
+                    }
+
+                    vm.$dispatch('mapHasNoError');
+
+                    return new google.maps.Marker({
+                        map: vm.map,
+                        position: results[0].geometry.location
+                    });
+                }
+
+                //alert('Had trouble loading that address');
+                //vm.warningAlert('Had trouble loading address');
+                //vm.$root.warningAlert('Had trouble loading address');
+                //vm.$root.hasError = true;
+                //vm.classHasError = {
+                //    'has-error': true
+                //};
+                vm.$dispatch('mapHasError', 'This doesn\'t look like a valid address');
+                //notie.alert(2, 'Warning<br><b>' + 'Had trouble loading address' + '</b><br>', 2);
+                //App.alert({
+                //    container     : $('#alert_container').val(), // alerts parent container(by default placed after the page breadcrumbs)
+                //    place         : "append", // "append" or "prepend" in container
+                //    type          : 'info', // alert's type
+                //    message       : "Test alert", // alert's message
+                //    close         : true, // make alert closable
+                //    reset         : false, // close all previouse alerts first
+                //    focus         : true, // auto scroll to the alert after shown
+                //    closeInSeconds: 10000, // auto close after defined seconds
+                //    icon          : 'fa fa-warning' // put icon class before the message
+                //});
+            });
+        }
+    }
+};
+
+},{}],6:[function(require,module,exports){
 'use strict';
 
 var _jquery = require('jquery');
@@ -18827,6 +18922,6 @@ var vue_app = require('./app');
 
 window.app = new Vue(vue_app.default());
 
-},{"./app":4,"jquery":1,"vue":3}]},{},[5]);
+},{"./app":4,"jquery":1,"vue":3}]},{},[6]);
 
 //# sourceMappingURL=bundle.js.map
