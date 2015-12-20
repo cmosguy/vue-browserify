@@ -1,3 +1,6 @@
+import $ from 'jquery'
+import geocomplete from 'geocomplete'
+
 export default {
 
     template: '#map-template',

@@ -1,8 +1,36 @@
 <!doctype html>
 <html>
 <head>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+
+    <style>
+        .map {
+            height: 500px;
+        }
+    </style>
 </head>
 <body>
+
+
+    <div class="form-body">
+        <div class="form-group" v-bind:class="classHasError">
+            <input type="text" id="address" v-model="address" placeholder="123 Example St."
+                   debounce="500">
+            <span class="help-block" v-if="hasError">Please enter a valid address</span>
+        </div>
+    </div>
+
+<map :address="address"></map>
+<template id="map-template">
+    <div class="portlet-body">
+        <div id="map" v-el:map class="map"></div>
+        <pre>@{{ $data | json }}</pre>
+    </div>
+
+</template>
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://maps.googleapis.com/maps/api/js?callback=app.init" async defer></script>
 <script src="./js/bundle.js"></script>
 </body>
 </html>

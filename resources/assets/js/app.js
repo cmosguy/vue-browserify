@@ -1,13 +1,14 @@
 import $ from 'jquery';
 
 import map from './components/map'
+import address_search from './components/address-search'
 
 
 export default function () {
     return {
         el: 'body',
 
-        components: {map},
+        components: {map, address_search},
 
         data: {
             address: '',

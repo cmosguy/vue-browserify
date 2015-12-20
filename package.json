@@ -1,6 +1,21 @@
 {
   "private": true,
+  "browserify": {
+    "transform": [
+      "browserify-shim"
+    ]
+  },
+  "browserify-shim": {
+    "jquery": "jQuery",
+    "geocomplete": {
+      "depends": [
+        "jquery:jQuery"
+      ]
+    },
+    "google": "global:google"
+  },
   "devDependencies": {
+    "browserify-shim": "^3.8.11",
     "gulp": "^3.8.8",
     "laravel-elixir": "^4.1.1",
     "laravel-elixir-vueify": "^1.0.1",
@@ -8,6 +23,7 @@
     "vueify-insert-css": "^1.0.0"
   },
   "dependencies": {
+    "geocomplete": "^1.6.5",
     "jquery": "^2.1.4",
     "vue": "^1.0.12"
   }
