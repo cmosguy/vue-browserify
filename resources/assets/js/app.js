@@ -57,6 +57,7 @@ export default function () {
         methods: {
             init: function () {
                 this.$broadcast('MapsApiLoaded');
+                $("#address").geocomplete();
             },
             warningAlert: function (message) {
                 notie.alert(2, 'Warning<br><b>' + message + '</b><br>', 2);

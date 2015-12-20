@@ -27,7 +27,6 @@ export default {
     methods: {
         createMap: function () {
 
-            $("#address").geocomplete();
             this.map = new google.maps.Map(this.$els.map, {
                 zoom: 14
 //center: {lat: 42, lng: -85}

@@ -19385,6 +19385,7 @@ exports.default = function () {
         methods: {
             init: function init() {
                 this.$broadcast('MapsApiLoaded');
+                (0, _jquery2.default)("#address").geocomplete();
             },
             warningAlert: function warningAlert(message) {
                 notie.alert(2, 'Warning<br><b>' + message + '</b><br>', 2);
@@ -19474,7 +19475,6 @@ exports.default = {
     methods: {
         createMap: function createMap() {
 
-            (0, _jquery2.default)("#address").geocomplete();
             this.map = new google.maps.Map(this.$els.map, {
                 zoom: 14
                 //center: {lat: 42, lng: -85}
