@@ -12,16 +12,14 @@
     </style>
 </head>
 <template id="address-template">
-    <form v-on:submit.prevent="enterKey">
-        <div class="form-body">
-            <div class="form-group" v-bind:class="classHasError">
-                <input type="text" v-on:keyup.enter="enterKey" id="address" v-model="address"
-                       placeholder="123 Example St."
-                       debounce="500">
-                <span class="help-block" v-if="has_error">Please enter a valid address</span>
-            </div>
+    <div class="form-body">
+        <div class="form-group" v-bind:class="classHasError">
+            <input type="text" v-on:keyup.enter="enterKey" id="address" v-model="address"
+                   placeholder="123 Example St."
+                   debounce="500">
+            <span class="help-block" v-if="has_error">Please enter a valid address</span>
         </div>
-    </form>
+    </div>
 </template>
 
 <template id="map-template">
