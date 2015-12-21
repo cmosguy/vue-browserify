@@ -1,46 +1,34 @@
 import $ from 'jquery';
 
 import map from './components/map'
-import address_search from './components/address-search'
+import address from './components/address'
 
 
 export default function () {
     return {
         el: 'body',
 
-        components: {map, address_search},
+        components: {map, address, location},
 
         data: {
             address: '',
-            hasError: false,
-            classHasError: {
-                'has-error': false
-            },
-            city: "",
-            streetNumber: "",
-            street: "",
-            neighborhood: "",
-            county: "",
-            state: "",
-            countryCode: "",
-            zip: ""
-        },
-
-        watch: {
-            hasError: function () {
-                this.classHasError =
-                {
-                    'has-error': this.hasError
-                }
+            has_error: false,
+            testNow: true,
+            location: {
+                city: "",
+                streetNumber: "",
+                street: "",
+                neighborhood: "",
+                county: "",
+                state: "",
+                countryCode: "",
+                zip: ""
             }
         },
 
         events: {
-            mapHasError: function (message) {
-                this.hasError = true;
-            },
-            mapHasNoError: function () {
-                this.hasError = false;
+            EnterKeyPressed: function () {
+                this.$broadcast('EnterKeyPressed');
             },
             addressUpdated: function (location) {
                 this.streetNumber = location[0].long_name;
@@ -58,13 +46,6 @@ export default function () {
             init: function () {
                 this.$broadcast('MapsApiLoaded');
                 $("#address").geocomplete();
-            },
-            warningAlert: function (message) {
-                notie.alert(2, 'Warning<br><b>' + message + '</b><br>', 2);
-            },
-            enterKey: function () {
-                $("#address").trigger('geocode');
-                this.$broadcast('EnterKeyPressed');
             }
         }
     }

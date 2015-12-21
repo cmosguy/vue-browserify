@@ -19327,6 +19327,8 @@ if (process.env.NODE_ENV !== 'production' && inBrowser) {
 module.exports = Vue;
 }).call(this,require('_process'))
 },{"_process":3}],5:[function(require,module,exports){
+module.exports = '<!doctype html>\n<html>\n<head>\n    <!-- Latest compiled and minified CSS -->\n    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"\n          integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">\n\n    <style>\n        .map {\n            height: 500px;\n        }\n    </style>\n</head>\n<template id="address-template">\n    <form v-on:submit.prevent="enterKey">\n        <div class="form-body">\n            <div class="form-group" v-bind:class="classHasError">\n                <input type="text" v-on:keyup.enter="enterKey" id="address" v-model="address"\n                       placeholder="123 Example St."\n                       debounce="500">\n                <span class="help-block" v-if="has_error">Please enter a valid address</span>\n            </div>\n        </div>\n    </form>\n</template>\n\n<template id="map-template">\n    <div class="portlet-body">\n        <div id="map" v-el:map class="map"></div>\n        <pre>@{{ $data | json }}</pre>\n    </div>\n</template>\n\n<body>\n\n\n<address :address.sync="address" :has_error="has_error"></address>\n<map :address="address" :has_error.sync="has_error" :location.sync="location"></map>\n<!-- Latest compiled and minified JavaScript -->\n<script src="./js/bundle.js"></script>\n<script src="https://maps.googleapis.com/maps/api/js?libraries=places&callback=app.init" async defer></script>\n</body>\n</html>\n';
+},{}],6:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -19337,38 +19339,27 @@ exports.default = function () {
     return {
         el: 'body',
 
-        components: { map: _map2.default, address_search: _addressSearch2.default },
+        components: { map: _map2.default, address: _address2.default, location: location },
 
         data: {
             address: '',
-            hasError: false,
-            classHasError: {
-                'has-error': false
-            },
-            city: "",
-            streetNumber: "",
-            street: "",
-            neighborhood: "",
-            county: "",
-            state: "",
-            countryCode: "",
-            zip: ""
-        },
-
-        watch: {
-            hasError: function hasError() {
-                this.classHasError = {
-                    'has-error': this.hasError
-                };
+            has_error: false,
+            testNow: true,
+            location: {
+                city: "",
+                streetNumber: "",
+                street: "",
+                neighborhood: "",
+                county: "",
+                state: "",
+                countryCode: "",
+                zip: ""
             }
         },
 
         events: {
-            mapHasError: function mapHasError(message) {
-                this.hasError = true;
-            },
-            mapHasNoError: function mapHasNoError() {
-                this.hasError = false;
+            EnterKeyPressed: function EnterKeyPressed() {
+                this.$broadcast('EnterKeyPressed');
             },
             addressUpdated: function addressUpdated(location) {
                 this.streetNumber = location[0].long_name;
@@ -19386,13 +19377,6 @@ exports.default = function () {
             init: function init() {
                 this.$broadcast('MapsApiLoaded');
                 (0, _jquery2.default)("#address").geocomplete();
-            },
-            warningAlert: function warningAlert(message) {
-                notie.alert(2, 'Warning<br><b>' + message + '</b><br>', 2);
-            },
-            enterKey: function enterKey() {
-                (0, _jquery2.default)("#address").trigger('geocode');
-                this.$broadcast('EnterKeyPressed');
             }
         }
     };
@@ -19406,13 +19390,13 @@ var _map = require('./components/map');
 
 var _map2 = _interopRequireDefault(_map);
 
-var _addressSearch = require('./components/address-search');
+var _address = require('./components/address');
 
-var _addressSearch2 = _interopRequireDefault(_addressSearch);
+var _address2 = _interopRequireDefault(_address);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-},{"./components/address-search":6,"./components/map":7,"jquery":2}],6:[function(require,module,exports){
+},{"./components/address":7,"./components/map":8,"jquery":2}],7:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -19427,12 +19411,27 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 exports.default = {
 
-    template: '#address-search',
-    props: ['address', 'hasError', 'classHasError']
+    template: '#address-template',
 
+    props: ['address', 'has_error'],
+
+    computed: {
+        classHasError: function classHasError() {
+            return {
+                'has-error': this.has_error
+            };
+        }
+    },
+
+    methods: {
+        enterKey: function enterKey() {
+            //$("#address").trigger('geocode');
+            this.$dispatch('EnterKeyPressed');
+        }
+    }
 };
 
-},{"jquery":2}],7:[function(require,module,exports){
+},{"jquery":2}],8:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -19453,7 +19452,7 @@ exports.default = {
 
     template: '#map-template',
 
-    props: ['address', 'hasError', 'classHasError'],
+    props: ['address', 'has_error', 'location'],
 
     events: {
         MapsApiLoaded: function MapsApiLoaded() {
@@ -19491,47 +19490,43 @@ exports.default = {
                 if (status === google.maps.GeocoderStatus.OK) {
                     vm.map.setCenter(results[0].geometry.location);
 
-                    //location = results[0].address_component;
+                    if (results[0].address_components.length >= 8) {
 
-                    if (results[0].address_components.length > 8) {
-                        //vm.city = results[0].address_components[3].long_name;
-                        vm.$dispatch('addressUpdated', results[0].address_components);
+                        var location = results[0].address_components;
+
+                        vm.has_error = false;
+
+                        vm.location.streetNumber = location[0].long_name;
+                        vm.location.street = location[1].long_name;
+                        vm.location.neighborhood = location[2].long_name;
+                        vm.location.city = location[3].long_name;
+                        vm.location.county = location[4].long_name;
+                        vm.location.state = location[5].short_name;
+                        vm.location.countryCode = location[6].short_name;
+                        vm.location.zip = location[7].short_name;
+                    } else {
+                        vm.has_error = true;
+                        vm.location.streetNumber = '';
+                        vm.location.street = '';
+                        vm.location.neighborhood = '';
+                        vm.location.city = '';
+                        vm.location.county = '';
+                        vm.location.state = '';
+                        vm.location.countryCode = '';
+                        vm.location.zip = '';
                     }
-
-                    vm.$dispatch('mapHasNoError');
 
                     return new google.maps.Marker({
                         map: vm.map,
                         position: results[0].geometry.location
                     });
                 }
-
-                //alert('Had trouble loading that address');
-                //vm.warningAlert('Had trouble loading address');
-                //vm.$root.warningAlert('Had trouble loading address');
-                //vm.$root.hasError = true;
-                //vm.classHasError = {
-                //    'has-error': true
-                //};
-                vm.$dispatch('mapHasError', 'This doesn\'t look like a valid address');
-                //notie.alert(2, 'Warning<br><b>' + 'Had trouble loading address' + '</b><br>', 2);
-                //App.alert({
-                //    container     : $('#alert_container').val(), // alerts parent container(by default placed after the page breadcrumbs)
-                //    place         : "append", // "append" or "prepend" in container
-                //    type          : 'info', // alert's type
-                //    message       : "Test alert", // alert's message
-                //    close         : true, // make alert closable
-                //    reset         : false, // close all previouse alerts first
-                //    focus         : true, // auto scroll to the alert after shown
-                //    closeInSeconds: 10000, // auto close after defined seconds
-                //    icon          : 'fa fa-warning' // put icon class before the message
-                //});
             });
         }
     }
 };
 
-},{"geocomplete":1,"jquery":2}],8:[function(require,module,exports){
+},{"geocomplete":1,"jquery":2}],9:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -19549,6 +19544,6 @@ var vue_app = require('./app');
 window.app = new Vue(vue_app.default());
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./app":5,"jquery":2,"vue":4}]},{},[8]);
+},{"./app":6,"jquery":2,"vue":4}]},{},[5,9]);
 
 //# sourceMappingURL=bundle.js.map

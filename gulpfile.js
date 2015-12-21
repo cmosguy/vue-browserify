@@ -11,10 +11,11 @@ var paths = {
 elixir(function (mix) {
 
     mix.browserify([
+        '../../../public/index.html',
         'main.js'
     ]).browserSync({
         //files: './public/js/bundle.js',
-        proxy: 'localhost:8888',
+        proxy: 'localhost:8888'
         //middleware: function (req, res, next) {
         //    console.log(req.url);
         //    next();
